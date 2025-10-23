@@ -1,0 +1,426 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GameHub_Library</title>
+  <meta name="description" content="GameHub — Your Games. One Library. Play, manage, and track progress." />
+  <style>
+    :root{
+      --bg: #0b0b0b;
+      --card: #0f0f10;
+      --muted: #9aa0a6;
+      --accent: #ff3c00;
+      --glass: rgba(255,255,255,0.03);
+      --radius: 12px;
+      --shadow: 0 8px 30px rgba(0,0,0,0.7);
+      --glass-2: rgba(255,255,255,0.02);
+      font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      min-height:100%;
+      background: linear-gradient(180deg,#060606 0%, #0f0f11 100%);
+      color:#e8e8e8;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      padding:32px;
+      display:flex;
+      flex-direction:column;
+      gap:20px;
+      align-items:center;
+    }
+
+    .container{
+      width:100%;
+      max-width:1200px;
+    }
+
+    header{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:12px}
+    header h1{
+      margin:0;font-size:1.6rem;letter-spacing:1px;text-transform:uppercase;color:var(--accent);
+    }
+    header p{margin:0;color:var(--muted);font-size:0.95rem}
+
+    /* Controls */
+    .controls{
+      display:flex;gap:10px;align-items:center;flex-wrap:wrap;
+      margin-bottom:12px;
+    }
+
+    .search{
+      display:flex;align-items:center;background:var(--glass);padding:8px 12px;border-radius:10px;gap:8px;
+      min-width:200px;
+    }
+    .search input{background:transparent;border:0;outline:none;color:inherit;font-size:0.95rem}
+
+    select,button{
+      background:var(--glass);
+      border:1px solid rgba(255,255,255,0.04);
+      color:inherit;padding:8px 12px;border-radius:10px;cursor:pointer;font-size:0.95rem
+    }
+    select:focus,button:focus,.search input:focus{outline:2px solid rgba(255,60,0,0.12)}
+
+    .actions{display:flex;gap:8px}
+
+    /* Grid */
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+      gap:16px;
+    }
+
+    .card{
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+      border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);border:1px solid rgba(255,255,255,0.02);
+      display:flex;flex-direction:column;min-height:220px;
+    }
+
+    .cover{
+      height:120px;position:relative;display:flex;align-items:flex-end;padding:12px;color:#fff;font-weight:700;font-size:1.05rem
+    }
+
+    .meta{padding:12px;display:flex;flex-direction:column;gap:8px;flex:1}
+    .meta .title{font-size:1rem;font-weight:700}
+    .meta .genre{font-size:0.85rem;color:var(--muted)}
+
+    .row{display:flex;justify-content:space-between;align-items:center;gap:8px}
+
+    .badge{
+      font-size:0.78rem;padding:6px 8px;border-radius:999px;background:rgba(0,0,0,0.25);-webkit-animation:none;animation:none;
+    }
+
+    .controls-bottom{display:flex;gap:8px;align-items:center}
+
+    .btn{
+      padding:8px 12px;border-radius:8px;border:0;background:var(--glass);cursor:pointer;color:inherit;font-weight:600
+    }
+
+    .btn.primary{background:linear-gradient(90deg,var(--accent),#ff6b3b);color:#fff}
+    .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.04)}
+
+    .progress-wrap{height:8px;background:var(--glass-2);border-radius:999px;overflow:hidden}
+    .progress{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),#ff8a5a)}
+
+    .muted{color:var(--muted);font-size:0.85rem}
+
+    .empty{padding:40px;text-align:center;color:var(--muted);background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent);border-radius:10px}
+
+    /* responsive */
+    @media (max-width:640px){
+      header{flex-direction:column;align-items:flex-start;gap:8px}
+      .controls{width:100%;justify-content:space-between}
+    }
+
+    /* spinner */
+    .spinner{width:18px;height:18px;border-radius:50%;border:2px solid rgba(255,255,255,0.12);border-top-color:var(--accent);animation:spin 1s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+
+    /* small accessibility helpers */
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div>
+        <h1>Library</h1>
+        <p>All games you own — play, update, or manage them from here.</p>
+      </div>
+      <div class="controls">
+        <div class="search" role="search" aria-label="Search games">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path><circle cx="11" cy="11" r="6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></circle></svg>
+          <input id="q" type="search" placeholder="Search games, tags..." aria-label="Search games" />
+        </div>
+
+        <select id="filter" aria-label="Filter games">
+          <option value="all">All</option>
+          <option value="installed">Installed</option>
+          <option value="not_installed">Not Installed</option>
+        </select>
+
+        <select id="sort" aria-label="Sort games">
+          <option value="recent">Recently Played</option>
+          <option value="playtime">Most Playtime</option>
+          <option value="alpha">A → Z</option>
+        </select>
+
+        <div class="actions">
+          <button id="install-updates" class="btn ghost" title="Install available updates">Install Updates</button>
+          <button id="add-game" class="btn primary" title="Add a new game">+ Add Game</button>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section id="grid" class="grid" aria-live="polite">
+        <!-- cards rendered by JS -->
+      </section>
+
+      <div id="empty" class="empty" style="display:none">
+        <strong>No games found.</strong>
+        <p class="muted">Try different filters or add a new game to your library.</p>
+      </div>
+    </main>
+
+    <footer style="margin-top:18px;color:var(--muted);font-size:0.9rem;display:flex;justify-content:space-between;align-items:center">
+      <div>© 2025 GameHub</div>
+      <div class="muted">Local data — not connected to backend (demo)</div>
+    </footer>
+  </div>
+
+  <template id="card-tpl">
+    <article class="card" tabindex="0">
+      <div class="cover" role="img" aria-hidden="true">
+        <div class="badge" style="margin-right:auto">%badge%</div>
+      </div>
+      <div class="meta">
+        <div class="row">
+          <div>
+            <div class="title">%title%</div>
+            <div class="genre">%genre% • %hours% hrs</div>
+          </div>
+          <div style="text-align:right">
+            <div class="muted">Last played</div>
+            <div class="muted">%last%</div>
+          </div>
+        </div>
+
+        <div class="progress-wrap" aria-hidden="true"><div class="progress" data-progress="%progress%"></div></div>
+
+        <div class="controls-bottom">
+          <div style="flex:1">
+            <button class="btn primary action-play" data-id="%id%">%primaryBtn%</button>
+            <button class="btn ghost action-secondary" data-id="%id%">%secondaryBtn%</button>
+          </div>
+          <div style="min-width:90px;text-align:right">
+            <div class="muted">%statusText%</div>
+          </div>
+        </div>
+      </div>
+    </article>
+  </template>
+
+  <script>
+    // Sample data. Replace / integrate with your backend as needed.
+    const SAMPLE_GAMES = [
+      {id:'neon-city', title:'Neon City Chase', genre:'Action / Open-World', hours:142, progress:78, installed:true, last:'2025-09-22', badge:'Installed', color:['#ff416c','#ff4b2b']},
+      {id:'apex-outlaws', title:'Apex Outlaws', genre:'Shooter / Online', hours:34, progress:12, installed:false, last:'2025-07-11', badge:'Not Installed', color:['#00c6ff','#0072ff']},
+      {id:'island-reckoning', title:'Island Reckoning', genre:'Adventure / RPG', hours:9, progress:3, installed:false, last:'2025-08-02', badge:'Owned', color:['#f7971e','#ffd200']},
+      {id:'merc-line', title:'Mercenary Line', genre:'Strategy / Tactics', hours:61, progress:44, installed:true, last:'2025-10-01', badge:'Installed', color:['#7b4397','#dc2430']},
+      {id:'circuit-drift', title:'Circuit Drift', genre:'Racing / Sports', hours:7, progress:24, installed:false, last:'2025-06-19', badge:'Owned', color:['#11998e','#38ef7d']},
+      {id:'skyline-heist', title:'Skyline Heist', genre:'Heist / Multiplayer', hours:201, progress:92, installed:true, last:'2025-09-29', badge:'Installed', color:['#141e30','#243b55']}
+    ];
+
+    // Persist installed state for demo convenience
+    const STORAGE_KEY = 'gamehub.library.demo.v1';
+    function loadState(){
+      try{
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if(!raw) return null;
+        return JSON.parse(raw);
+      }catch(e){console.warn(e);return null}
+    }
+    function saveState(state){
+      try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state))}catch(e){console.warn(e)}
+    }
+
+    // Merge sample games with saved installed flags
+    const saved = loadState();
+    const GAMES = SAMPLE_GAMES.map(g=>({
+      ...g,
+      installed: saved && saved[g.id] !== undefined ? saved[g.id] : g.installed
+    }));
+
+    // DOM refs
+    const grid = document.getElementById('grid');
+    const tpl = document.getElementById('card-tpl').innerHTML;
+    const q = document.getElementById('q');
+    const filter = document.getElementById('filter');
+    const sort = document.getElementById('sort');
+    const empty = document.getElementById('empty');
+    const installUpdatesBtn = document.getElementById('install-updates');
+    const addGameBtn = document.getElementById('add-game');
+
+    // Render function
+    function render(list){
+      grid.innerHTML = '';
+      if(!list.length){empty.style.display='block';return} else {empty.style.display='none'}
+
+      list.forEach(game=>{
+        const html = tpl
+          .replace('%id%',escapeHtml(game.id))
+          .replace('%title%',escapeHtml(game.title))
+          .replace('%genre%',escapeHtml(game.genre))
+          .replace('%hours%',escapeHtml(game.hours))
+          .replace('%progress%',escapeHtml(game.progress) + '%')
+          .replace('%last%',escapeHtml(game.last))
+          .replace('%badge%',escapeHtml(game.installed? 'Installed' : game.badge))
+          .replace('%primaryBtn%', game.installed ? 'Play' : 'Install')
+          .replace('%secondaryBtn%', game.installed ? 'Update' : 'Details')
+          .replace('%statusText%', game.installed ? 'Ready' : 'Not installed')
+        ;
+
+        const wrapper = document.createElement('div');
+        wrapper.innerHTML = html;
+        const card = wrapper.firstElementChild;
+
+        // style cover with gradient
+        const cover = card.querySelector('.cover');
+        const colors = game.color || ['#222','#444'];
+        cover.style.background = `linear-gradient(135deg, ${colors[0]} 0%, ${colors[1]} 100%)`;
+        cover.querySelector('.badge').style.background = 'rgba(0,0,0,0.25)';
+        cover.querySelector('.badge').textContent = game.installed ? 'Installed' : game.badge;
+
+        // apply progress width from data attribute (set during template replacement)
+        const progressEl = card.querySelector('.progress');
+        if(progressEl){
+          progressEl.style.width = progressEl.dataset.progress || '0%';
+        }
+
+        // wire up actions
+        const playBtn = card.querySelector('.action-play');
+        const secBtn = card.querySelector('.action-secondary');
+
+        playBtn.addEventListener('click', ()=>handlePrimary(game, card, playBtn, secBtn));
+        secBtn.addEventListener('click', ()=>handleSecondary(game, card, playBtn, secBtn));
+
+        grid.appendChild(card);
+      });
+    }
+
+    function handlePrimary(game, card, playBtn, secBtn){
+      if(game.installed){
+        // Simulate launch
+        const prev = playBtn.textContent;
+        playBtn.disabled = true;
+        playBtn.innerHTML = '<span class="spinner" aria-hidden="true"></span> Launching...';
+        setTimeout(()=>{
+          playBtn.disabled = false;
+          playBtn.textContent = prev;
+          alert(`Launching ${game.title} — (demo)`);
+        }, 900);
+      } else {
+        // Start install simulation
+        simulateInstall(game, card, playBtn, secBtn);
+      }
+    }
+
+    function handleSecondary(game, card, playBtn, secBtn){
+      if(game.installed){
+        // Simulate update
+        simulateUpdate(game, card, playBtn, secBtn);
+      } else {
+        alert(
+          game.title + "\n\n" +
+          game.genre + "\n" +
+          "Playtime: " + game.hours + " hrs\n" +
+          "Progress: " + game.progress + "%"
+        );
+      }
+    }
+
+    function simulateInstall(game, card, playBtn, secBtn){
+      playBtn.disabled = true;
+      secBtn.disabled = true;
+      const progressEl = card.querySelector('.progress');
+      let fake = 0;
+      playBtn.innerHTML = '<span class="spinner" aria-hidden="true"></span> Installing...';
+      const t = setInterval(()=>{
+        fake += Math.floor(Math.random()*10)+6;
+        if(fake>100) fake=100;
+        progressEl.style.width = fake+'%';
+        if(fake>=100){
+          clearInterval(t);
+          game.installed = true;
+          saveInstallState(game.id, true);
+          playBtn.disabled=false; secBtn.disabled=false;
+          playBtn.textContent = 'Play';
+          secBtn.textContent = 'Update';
+          card.querySelector('.badge').textContent = 'Installed';
+          card.querySelector('.muted').textContent = 'Ready';
+        }
+      },220);
+    }
+
+    function simulateUpdate(game, card, playBtn, secBtn){
+      playBtn.disabled = true; secBtn.disabled = true;
+      const progressEl = card.querySelector('.progress');
+      let fake = parseInt(game.progress || 0,10);
+      secBtn.innerHTML = '<span class="spinner" aria-hidden="true"></span> Updating...';
+      const t = setInterval(()=>{
+        fake += Math.floor(Math.random()*12)+4;
+        if(fake>100) fake=100;
+        progressEl.style.width = fake+'%';
+        if(fake>=100){
+          clearInterval(t);
+          game.progress = 100;
+          secBtn.disabled=false; playBtn.disabled=false;
+          secBtn.textContent = 'Update';
+          alert(game.title + ' updated (demo)');
+        }
+      },200);
+    }
+
+    function saveInstallState(id, installed){
+      const cur = loadState() || {};
+      cur[id] = installed;
+      saveState(cur);
+    }
+
+    // filtering
+    function getFiltered(){
+      const qv = q.value.trim().toLowerCase();
+      const fv = filter.value;
+      const sv = sort.value;
+
+      let list = GAMES.slice();
+      if(fv==='installed') list = list.filter(g=>g.installed);
+      if(fv==='not_installed') list = list.filter(g=>!g.installed);
+
+      if(qv){
+        list = list.filter(g=> (g.title||'').toLowerCase().includes(qv) || (g.genre||'').toLowerCase().includes(qv));
+      }
+
+      if(sv==='playtime') list.sort((a,b)=>b.hours-a.hours);
+      else if(sv==='alpha') list.sort((a,b)=>a.title.localeCompare(b.title));
+      else list.sort((a,b)=> new Date(b.last) - new Date(a.last));
+
+      return list;
+    }
+
+    // events
+    q.addEventListener('input', ()=>render(getFiltered()));
+    filter.addEventListener('change', ()=>render(getFiltered()));
+    sort.addEventListener('change', ()=>render(getFiltered()));
+
+    installUpdatesBtn.addEventListener('click', ()=>{
+      // naive demo: update all installed games that have progress < 100
+      const toUpdate = GAMES.filter(g=>g.installed && g.progress < 100);
+      if(!toUpdate.length){alert('No updates available.');return}
+      toUpdate.forEach(g=>{
+        const card = Array.from(document.querySelectorAll('.card')).find(c=>c.querySelector('.action-play').dataset.id===g.id);
+        if(card){ simulateUpdate(g, card, card.querySelector('.action-play'), card.querySelector('.action-secondary')) }
+      });
+    });
+
+    addGameBtn.addEventListener('click', ()=>{
+      const title = prompt('Add a game to your library — enter title');
+      if(!title) return;
+      const id = title.toLowerCase().replace(/[^a-z0-9]+/g,'-');
+      const g = {id, title, genre:'Unknown', hours:0, progress:0, installed:false, last:(new Date()).toISOString().slice(0,10), badge:'Owned', color:['#333','#666']};
+      GAMES.unshift(g);
+      render(getFiltered());
+    });
+
+    // utilities
+    function escapeHtml(s){return String(s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}[c]})}
+
+    // initial render
+    render(getFiltered());
+  </script>
+</body>
+</html>

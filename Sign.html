@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GameHub-Signup Page</title>
+
+  <body>
+  <div class="signup-container">
+    <h2>Sign Up</h2>
+    <form id="signupForm">
+      <input type="text" id="username" placeholder="Username" required>
+      <input type="email" id="email" placeholder="Email" required>
+      <input type="password" id="password" placeholder="Password" required>
+      <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
+      <button type="submit" a href="Dashboard.html",>Register</button>
+    </form>
+  </div>
+  <link rel="stylesheet" href="Sign.css">
+  <script>
+     const form = document.getElementById("signupForm");
+    const message = document.getElementById("message");
+
+    form.addEventListener("submit", function(e) {
+      e.preventDefault(); // stop form from refreshing page
+
+      const username = document.getElementById("username").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+      const confirmPassword = document.getElementById("confirmPassword").value;
+
+      // Basic validation
+      if (username.length < 3) {
+        message.textContent = "Username must be at least 3 characters.";
+        message.className = "error";
+        return;
+      }
+
+      if (!email.includes("@gmail.com")) {
+        message.textContent = "Enter a valid email address.";
+        message.className = "error";
+        return;
+      }
+
+      if (password.length < 6) {
+        message.textContent = "Password must be at least 4 characters.";
+        message.className = "error";
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        message.textContent = "Passwords do not match.";
+        message.className = "error";
+        return;
+      }
+
+      // Here’s where you’d send data to backend later
+      console.log({ username, email, password });
+    });
+  </script>
+  </body>  
+</head>
+
+</html>
+

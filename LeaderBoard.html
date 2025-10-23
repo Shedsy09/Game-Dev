@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Leaderboard | GameHub</title>
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(135deg, #0a0a0a, #1b1b1b);
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      height: 100vh;
+      margin: 0;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 30px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      border-bottom: 2px solid #ff3c00;
+      padding-bottom: 10px;
+    }
+
+    table {
+      width: 80%;
+      max-width: 800px;
+      border-collapse: collapse;
+      background: #111;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 0 20px rgba(255, 60, 0, 0.3);
+    }
+
+    th, td {
+      padding: 15px;
+      text-align: center;
+    }
+
+    th {
+      background: #ff3c00;
+      color: #fff;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    tr:nth-child(even) {
+      background: #1d1d1d;
+    }
+
+    tr:hover {
+      background: #2a2a2a;
+      transition: 0.3s;
+    }
+
+    td.rank {
+      font-weight: bold;
+      color: #ff3c00;
+    }
+
+    footer {
+      margin-top: 40px;
+      font-size: 0.9rem;
+      color: #888;
+    }
+
+    @media (max-width: 600px) {
+      table {
+        width: 95%;
+      }
+      h1 {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Leaderboard</h1>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Rank</th>
+        <th>Player</th>
+        <th>Score</th>
+        <th>Country</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="rank">1</td>
+        <td>ShadowReign</td>
+        <td>9850</td>
+        <td>🇺🇸</td>
+      </tr>
+      <tr>
+        <td class="rank">2</td>
+        <td>NovaBlade</td>
+        <td>9720</td>
+        <td>🇬🇧</td>
+      </tr>
+      <tr>
+        <td class="rank">3</td>
+        <td>CrimsonWolf</td>
+        <td>9600</td>
+        <td>🇨🇦</td>
+      </tr>
+      <tr>
+        <td class="rank">4</td>
+        <td>IronViper</td>
+        <td>9480</td>
+        <td>🇳🇬</td>
+      </tr>
+      <tr>
+        <td class="rank">5</td>
+        <td>BlitzFury</td>
+        <td>9360</td>
+        <td>🇯🇵</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <footer>
+    © 2025 GameHub | All Rights Reserved
+  </footer>
+
+</body>
+</html>
